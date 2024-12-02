@@ -9,4 +9,6 @@ public interface ProductService {
     Optional<ProductDTO> findById(Long id) throws IllegalArgumentException;
     Set<ProductDTO> getProducts();
     Set<ProductDTO> getProductsByCategory(String category);
+
+    ProductDTO addProduct(ProductDTO productDTO);
 }

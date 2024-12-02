@@ -33,6 +33,12 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(productDTO);
     }
 
+    @PostMapping("/products")
+    public ResponseEntity<ProductDTO> createProductHandler(@RequestBody ProductDTO productDTO) {
+        ProductDTO addProductDTO = productService.addProduct(productDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(addProductDTO);
+    }
+
     @GetMapping(value = "/products/internal-exception",produces = "application/json")
     @ResponseBody
     public ResponseEntity<String> internalExceptionHandler() {

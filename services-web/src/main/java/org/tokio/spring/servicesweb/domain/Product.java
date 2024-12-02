@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "PRODUCTS")
@@ -20,6 +21,8 @@ public class Product {
 
     private int stock;
     private BigDecimal price;
+
+    private LocalDateTime  createAt;
 
     @Version
     private int version;

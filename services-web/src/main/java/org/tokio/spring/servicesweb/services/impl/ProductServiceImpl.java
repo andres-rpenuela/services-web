@@ -11,6 +11,7 @@ import org.tokio.spring.servicesweb.dto.ProductDTO;
 import org.tokio.spring.servicesweb.report.ProductDao;
 import org.tokio.spring.servicesweb.services.ProductService;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -53,6 +54,29 @@ public class ProductServiceImpl implements ProductService {
                 .collect(Collectors.toSet());
     }
 
+    @Override
+    @Transactional
+    public ProductDTO addProduct(ProductDTO productDTO) {
+        Product product = new Product();
+        populationCreateAndEditProduct(product, productDTO);
+
+        return ProductServiceImpl.mapperProductToProductDTO(product);
+    }
+
+    private void populationCreateAndEditProduct(Product product, ProductDTO productDTO) {
+
+        // set or update data
+        product.setName(productDTO.getName());
+        product.setDescription(productDTO.getDescription());
+        product.setPrice(productDTO.getPrice());
+        product.setCategory(productDTO.getCategory());
+        product.setStock(productDTO.getStock());
+        product.setDescription(productDTO.getDescription());
+        product.setCreateAt(LocalDateTime.now());
+
+        productDao.save(product);
+    }
+
     private Set<Product> findAllProducts() {
         return productDao.findAllProducts();
     }
@@ -69,6 +93,7 @@ public class ProductServiceImpl implements ProductService {
                 .price(product.getPrice())
                 .description(product.getDescription())
                 .category(product.getCategory())
+                .createdAt(product.getCreateAt())
                 .build();
     }
 }
