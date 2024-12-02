@@ -1,6 +1,7 @@
 package org.tokio.spring.servicesweb.controller;
 
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,10 +10,22 @@ import org.tokio.spring.servicesweb.core.constans.ErrorCode;
 import org.tokio.spring.servicesweb.core.exception.ProductNotFoundException;
 import org.tokio.spring.servicesweb.core.response.ResponseError;
 import org.tokio.spring.servicesweb.dto.ErrorDTO;
+import org.tokio.spring.servicesweb.dto.ProductDTO;
+import org.tokio.spring.servicesweb.services.ProductService;
+
+import java.util.Set;
 
 @RestController
 @Slf4j
+@RequiredArgsConstructor
 public class ProductController {
+
+    private final ProductService productService;
+
+    @GetMapping("/products")
+    public ResponseEntity<Set<ProductDTO>> getALlProductsHandler(@RequestParam(name = "category", defaultValue = "") String category) {
+        return ResponseEntity.status(HttpStatus.OK).body(productService.getProductsByCategory(category));
+    }
 
     @GetMapping(value = "/products/internal-exception",produces = "application/json")
     @ResponseBody
