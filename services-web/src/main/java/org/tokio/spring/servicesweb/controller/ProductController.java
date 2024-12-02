@@ -27,6 +27,12 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(productService.getProductsByCategory(category));
     }
 
+    @GetMapping("/products/{id}")
+    public ResponseEntity<ProductDTO> getProductByIdHandler(@PathVariable(value =  "id") long id) throws IllegalArgumentException, ProductNotFoundException {
+        final ProductDTO productDTO = productService.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
+        return ResponseEntity.status(HttpStatus.OK).body(productDTO);
+    }
+
     @GetMapping(value = "/products/internal-exception",produces = "application/json")
     @ResponseBody
     public ResponseEntity<String> internalExceptionHandler() {

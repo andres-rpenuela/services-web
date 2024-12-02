@@ -24,6 +24,16 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
+    public Optional<ProductDTO> findById(Long id)  throws IllegalArgumentException{
+        Long maybeId = Optional.ofNullable(id)
+                .orElseThrow(() -> new IllegalArgumentException("id is required"));
+
+        return productDao.findById(maybeId)
+                .map(ProductServiceImpl::mapperProductToProductDTO);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public Set<ProductDTO> getProducts() {
         return findAllProducts().stream()
                 .map(ProductServiceImpl::mapperProductToProductDTO)
