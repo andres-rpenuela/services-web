@@ -24,6 +24,9 @@ public class Product {
 
     private LocalDateTime  createAt;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    private Resource resource;
+
     @Version
     private int version;
 }

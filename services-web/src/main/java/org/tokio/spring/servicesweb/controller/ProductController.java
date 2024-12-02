@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.tokio.spring.servicesweb.core.constans.ErrorCode;
 import org.tokio.spring.servicesweb.core.exception.ProductNotFoundException;
 import org.tokio.spring.servicesweb.core.response.ResponseError;
@@ -13,6 +14,7 @@ import org.tokio.spring.servicesweb.dto.ErrorDTO;
 import org.tokio.spring.servicesweb.dto.ProductDTO;
 import org.tokio.spring.servicesweb.services.ProductService;
 
+import java.io.IOException;
 import java.util.Set;
 
 @RestController
@@ -27,15 +29,23 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(productService.getProductsByCategory(category));
     }
 
-    @GetMapping("/products/{id}")
+    @GetMapping(value="/products/{id}",produces = "application/json")
     public ResponseEntity<ProductDTO> getProductByIdHandler(@PathVariable(value =  "id") long id) throws IllegalArgumentException, ProductNotFoundException {
         final ProductDTO productDTO = productService.findById(id).orElseThrow(() -> new ProductNotFoundException(id));
         return ResponseEntity.status(HttpStatus.OK).body(productDTO);
     }
 
-    @PostMapping("/products")
+    @PostMapping(value="/products",produces = "application/json",consumes = "application/json")
     public ResponseEntity<ProductDTO> createProductHandler(@RequestBody ProductDTO productDTO) {
         ProductDTO addProductDTO = productService.addProduct(productDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(addProductDTO);
+    }
+
+    @PostMapping(value = "/products/full",produces = "application/json",consumes = {"multipart/form-data","application/octet-stream"})
+    public ResponseEntity<ProductDTO> createProductFullHandler(@RequestParam(name="img") MultipartFile multipartFile,
+                                                               @RequestParam(name="description", required=false) String description,
+                                                               @RequestPart(name = "productDTO") ProductDTO productDTO) throws IOException {
+        ProductDTO addProductDTO = productService.addProduct(productDTO,multipartFile,description);
         return ResponseEntity.status(HttpStatus.CREATED).body(addProductDTO);
     }
 
