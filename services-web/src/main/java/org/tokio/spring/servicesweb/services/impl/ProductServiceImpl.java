@@ -8,6 +8,7 @@ import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.tokio.spring.servicesweb.core.exception.ProductNotFoundException;
 import org.tokio.spring.servicesweb.domain.Product;
 import org.tokio.spring.servicesweb.domain.Resource;
 import org.tokio.spring.servicesweb.dto.ProductDTO;
@@ -89,8 +90,15 @@ public class ProductServiceImpl implements ProductService {
         return ProductServiceImpl.mapperProductToProductDTO(product);
     }
 
-    private void populationCreateAndEditProduct(Product product, ProductDTO productDTO,Resource resource) {
+    @Override
+    public ProductDTO updateProduct(long id, ProductDTO productDTO)  throws ProductNotFoundException {
+        Product product = productDao.findById(id).orElseThrow(()-> new ProductNotFoundException(id));
+        populationCreateAndEditProduct(product, productDTO, null);
+        return ProductServiceImpl.mapperProductToProductDTO(product);
+    }
 
+    private void populationCreateAndEditProduct(Product product, ProductDTO productDTO,Resource resource) {
+        final LocalDateTime now = LocalDateTime.now();
         // set or update data
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
@@ -98,7 +106,11 @@ public class ProductServiceImpl implements ProductService {
         product.setCategory(productDTO.getCategory());
         product.setStock(productDTO.getStock());
         product.setDescription(productDTO.getDescription());
-        product.setCreateAt(LocalDateTime.now());
+        if(product.getCreateAt() == null){
+            product.setCreateAt(now);
+        }
+        product.setLastModifiedAt(now);
+
         // control image of product
         if(resource!=null){
             // remove img old
@@ -140,6 +152,7 @@ public class ProductServiceImpl implements ProductService {
                 .description(product.getDescription())
                 .category(product.getCategory())
                 .createdAt(product.getCreateAt())
+                .updatedAt(product.getLastModifiedAt())
                 .resourceDTO(resourceDTO)
                 .build();
     }

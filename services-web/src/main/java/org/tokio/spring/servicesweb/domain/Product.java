@@ -23,6 +23,7 @@ public class Product {
     private BigDecimal price;
 
     private LocalDateTime  createAt;
+    private LocalDateTime  lastModifiedAt;
 
     @OneToOne(cascade = CascadeType.ALL)
     private Resource resource;

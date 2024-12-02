@@ -1,6 +1,7 @@
 package org.tokio.spring.servicesweb.services;
 
 import org.springframework.web.multipart.MultipartFile;
+import org.tokio.spring.servicesweb.core.exception.ProductNotFoundException;
 import org.tokio.spring.servicesweb.dto.ProductDTO;
 
 import java.io.IOException;
@@ -14,4 +15,6 @@ public interface ProductService {
 
     ProductDTO addProduct(ProductDTO productDTO);
     ProductDTO addProduct(ProductDTO productDTO, MultipartFile file,String description) throws IOException;
+
+    ProductDTO updateProduct(long id, ProductDTO productDTO) throws ProductNotFoundException;
 }

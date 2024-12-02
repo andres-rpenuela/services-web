@@ -49,6 +49,12 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.CREATED).body(addProductDTO);
     }
 
+    @PutMapping(value = "/products/{id}", produces = "application/json",consumes = "application/json")
+    public ResponseEntity<ProductDTO> updateProductHandler(@PathVariable(name="id") String id, @RequestBody ProductDTO productDTO) {
+        ProductDTO updateProduct =  productService.updateProduct(Long.parseLong(id),productDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(updateProduct);
+    }
+
     @GetMapping(value = "/products/internal-exception",produces = "application/json")
     @ResponseBody
     public ResponseEntity<String> internalExceptionHandler() {

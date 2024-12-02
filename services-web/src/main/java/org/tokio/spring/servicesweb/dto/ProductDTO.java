@@ -20,5 +20,6 @@ public class ProductDTO {
     private BigDecimal price;
     private String category;
     private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     private ResourceDTO resourceDTO;
 }
