@@ -17,4 +17,6 @@ public interface ProductService {
     ProductDTO addProduct(ProductDTO productDTO, MultipartFile file,String description) throws IOException;
 
     ProductDTO updateProduct(long id, ProductDTO productDTO) throws ProductNotFoundException;
+
+    void deleteProductById(Long id)  throws ProductNotFoundException;
 }

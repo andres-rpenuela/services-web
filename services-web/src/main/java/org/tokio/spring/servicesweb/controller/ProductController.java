@@ -55,6 +55,12 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(updateProduct);
     }
 
+    @DeleteMapping(value="/products/{id}", produces = "application/json")
+    public ResponseEntity<ResponseError<ErrorDTO>> deleteProductHandler(@PathVariable(name="id") Long id) {
+        productService.deleteProductById(id);
+        return ResponseEntity.status(HttpStatus.OK).body(ErrorDTO.noErrorResponse());
+    }
+
     @GetMapping(value = "/products/internal-exception",produces = "application/json")
     @ResponseBody
     public ResponseEntity<String> internalExceptionHandler() {

@@ -91,10 +91,18 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    @Transactional
     public ProductDTO updateProduct(long id, ProductDTO productDTO)  throws ProductNotFoundException {
         Product product = productDao.findById(id).orElseThrow(()-> new ProductNotFoundException(id));
         populationCreateAndEditProduct(product, productDTO, null);
         return ProductServiceImpl.mapperProductToProductDTO(product);
+    }
+
+    @Override
+    @Transactional
+    public void deleteProductById(Long id) throws ProductNotFoundException {
+        Product product = productDao.findById(id).orElseThrow(()-> new ProductNotFoundException(id));
+        productDao.delete(product);
     }
 
     private void populationCreateAndEditProduct(Product product, ProductDTO productDTO,Resource resource) {
