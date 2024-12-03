@@ -1,5 +1,13 @@
 package org.tokio.spring.servicesweb.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,14 +25,27 @@ import org.tokio.spring.servicesweb.services.ProductService;
 import java.io.IOException;
 import java.util.Set;
 
+/**
+ * Swagger::
+ *
+ * http://localhost:8080/swagger-ui/index.html
+ * http://localhost:8080/v3/api-docs
+ */
 @RestController
 @Slf4j
 @RequiredArgsConstructor
+@Tag(name = "Productos", description = "Gestión de productos")
 public class ProductController {
 
     private final ProductService productService;
 
     @GetMapping("/products")
+    @Operation(summary = "Listado de productos")
+    @ApiResponses(value={
+            @ApiResponse(responseCode = "200", description = "Listado de productos",content =
+                @Content(array = @ArraySchema(schema = @Schema(implementation = ProductDTO.class)))
+            )})
+    @Parameter(name = "category",description = "Filter by category of list. This param is optional.")
     public ResponseEntity<Set<ProductDTO>> getALlProductsHandler(@RequestParam(name = "category", defaultValue = "") String category) {
         return ResponseEntity.status(HttpStatus.OK).body(productService.getProductsByCategory(category));
     }

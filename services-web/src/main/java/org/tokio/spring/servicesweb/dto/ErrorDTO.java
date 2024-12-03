@@ -1,5 +1,6 @@
 package org.tokio.spring.servicesweb.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +10,9 @@ import org.tokio.spring.servicesweb.core.response.ResponseError;
 @Data
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ErrorDTO {
+    @Schema(name = "errorCode",description = "código de error http devuelto en la operación")
     private Long errorCode;
+    @Schema(name = "message",description = "mensage de error http devuelto en la operación")
     private String message;
 
     public static ResponseError<ErrorDTO> noErrorResponse() {
