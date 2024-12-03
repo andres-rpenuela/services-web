@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,6 +32,8 @@ public class ProductServiceImpl implements ProductService {
     private final ProductDao productDao;
     private final ResourceDao resourceDao;
 
+    private final ModelMapper modelMapper;
+
     @Override
     @Transactional(readOnly = true)
     public Optional<ProductDTO> findById(Long id)  throws IllegalArgumentException{
@@ -45,7 +48,8 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public Set<ProductDTO> getProducts() {
         return findAllProducts().stream()
-                .map(ProductServiceImpl::mapperProductToProductDTO)
+                //.map(ProductServiceImpl::mapperProductToProductDTO)
+                .map(this::modelMapperProductToProductDTO)
                 .collect(Collectors.toSet());
     }
 
@@ -58,7 +62,8 @@ public class ProductServiceImpl implements ProductService {
                 .orElseGet(this::findAllProducts);
 
         return products.stream()
-                .map(ProductServiceImpl::mapperProductToProductDTO)
+                //.map(ProductServiceImpl::mapperProductToProductDTO)
+                .map(this::modelMapperProductToProductDTO)
                 .collect(Collectors.toSet());
     }
 
@@ -163,5 +168,9 @@ public class ProductServiceImpl implements ProductService {
                 .updatedAt(product.getLastModifiedAt())
                 .resourceDTO(resourceDTO)
                 .build();
+    }
+
+    private ProductDTO modelMapperProductToProductDTO(@NonNull Product product) {
+        return modelMapper.map(product,ProductDTO.class);
     }
 }
